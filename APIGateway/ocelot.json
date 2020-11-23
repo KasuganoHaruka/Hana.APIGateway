@@ -38,11 +38,11 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin" //轮询   LeastConnection 最小链接数  NoLoadBalance 不负载均衡
       }
-      //,
-      //"AuthenticationOptions": {
-      //  "AuthenticationProviderKey": "UserGatewayKey",
-      //  "AllowedScopes": []
-      //}
+      ,
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "UserGatewayKey",
+        "AllowedScopes": [ "api1.finduser.scope" ]
+      }
       
     },
     {

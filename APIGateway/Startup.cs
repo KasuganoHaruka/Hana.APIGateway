@@ -19,15 +19,15 @@ namespace APIGateway
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //var providerKey = "UserGatewayKey";
-            //services.AddAuthentication("Bearer")
-            //    .AddIdentityServerAuthentication(providerKey, option=> 
-            //    {
-            //        option.Authority = "http://localhost:15201";
-            //        option.ApiName = "UserApi";
-            //        option.RequireHttpsMetadata = false;
-            //        option.SupportedTokens = SupportedTokens.Both;
-            //    });
+            var providerKey = "UserGatewayKey";
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication(providerKey, option =>
+                {
+                    option.Authority = "http://localhost:15201";
+                    option.ApiName = "api1";
+                    option.RequireHttpsMetadata = false;
+                    option.SupportedTokens = SupportedTokens.Both;
+                });
 
             services.AddOcelot()
                     .AddConsul()
