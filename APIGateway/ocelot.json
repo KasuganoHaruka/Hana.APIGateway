@@ -1,0 +1,117 @@
+﻿//硬编码实现负载均衡
+//{
+//  "Routes": [
+//    {
+//      "DownstreamPathTemplate": "/api/{url}",
+//      "DownstreamScheme": "http",
+//      "DownstreamHostAndPorts": [
+//        {
+//          "Host": "localhost",
+//          "Port": 5726
+//        },
+//        {
+//          "Host": "localhost",
+//          "Port": 5727
+//        },
+//        {
+//          "Host": "localhost",
+//          "Port": 5728
+//        }
+//      ],
+//      "UpstreamPathTemplate": "/Gateway/{postId}",
+//      "LoadBalancer": "LeastConnection",
+//      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+//    }
+//  ]
+//}
+
+//*******************Consul实现***************
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/{url}", //服务地址--url变量
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Demo/{url}", //网关地址--url变量
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UseServiceDiscovery": true,
+      "ServiceName": "ClientDemo", //consul服务名称
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin" //轮询   LeastConnection 最小链接数  NoLoadBalance 不负载均衡
+      }
+      //,
+      //"AuthenticationOptions": {
+      //  "AuthenticationProviderKey": "UserGatewayKey",
+      //  "AllowedScopes": []
+      //}
+      
+    },
+    {
+      "DownstreamPathTemplate": "/api/{url}", //服务地址--url变量
+      "DownstreamScheme": "http",
+      "UpstreamPathTemplate": "/Bas/{url}", //网关地址--url变量
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UseServiceDiscovery": true,
+      "ServiceName": "HanaBas", //consul服务名称
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin" //轮询
+      }
+    },
+    {
+      "DownstreamScheme": "http",
+      "DownstreamPathTemplate": "/api/{url}", //服务地址--url变量
+      "UpstreamPathTemplate": "/Log/{url}", //网关地址--url变量
+      "UpstreamHttpMethod": [ "Get", "Post" ],
+      "UseServiceDiscovery": true,
+      "ServiceName": "HanaLog", //consul服务名称
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin" //轮询
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http:/127.0.0.1:6299", //网关对外地址
+    "ServiceDiscoveryProvider": { //即时请求
+      "Host": "localhost",
+      "Port": 8500,
+      "Type": "Consul"                //由Consul挺服务发现
+    }
+    //"ServiceDiscoveryProvider": {   //定时轮询Consul
+    //  "Host": "localhost",
+    //  "Port": 8500,
+    //  "Type": "PollConsul",
+    //  "PollingInterval": 1000,      
+    //  "Token": "footoken"
+    //}
+  }
+}
+
+
+//*******************Consul + 缓存***************
+
+//{
+//  "Routes": [
+//    {
+//      "DownstreamPathTemplate": "/api/{url}", //服务地址--url变量
+//      "DownstreamScheme": "http",
+//      "UpstreamPathTemplate": "/Demo/{url}", //网关地址--url变量
+//      "UpstreamHttpMethod": [ "Get", "Post" ],
+//      "UseServiceDiscovery": true,
+//      "ServiceName": "ClientDemo", //consul服务名称
+//      "LoadBalancerOptions": {
+//        "Type": "RoundRobin" //轮询   LeastConnection 最小链接数  NoLoadBalance 不负载均衡
+//      },
+//      "FileCacheOptions": {
+//        "TtlSeconds": 15,
+//        "Region": "UserCache"
+//      }
+//    }
+//  ],
+//  "GlobalConfiguration": {
+//    "BaseUrl": "http:/127.0.0.1:6299", //网关对外地址
+//    "ServiceDiscoveryProvider": { //即时请求
+//      "Host": "localhost",
+//      "Port": 8500,
+//      "Type": "Consul"
+//    }
+//  }
+//}
